@@ -10,7 +10,6 @@
             padding: 0px;
             box-sizing: border-box;
         }
-        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(to right, #4facfe, #00f2fe);
@@ -36,7 +35,6 @@
             color: #333;
         }
 
-        /* Form Styling */
         form {
             display: flex;
             flex-direction: column;
@@ -76,7 +74,6 @@
             display: none;
         }
 
-        /* Consent Checkbox */
         .consent-container {
             display: flex;
             align-items: center;
@@ -90,7 +87,6 @@
             margin: 0;
         }
 
-        /* Submit Button */
         button {
             background: #4facfe;
             color: white;
@@ -108,7 +104,6 @@
             background: #00c6ff;
         }
 
-        /* Error Message */
         #emailError {
             text-align: left;
             color: red;
@@ -116,7 +111,6 @@
             display: none;
         }
 
-        /* Success Message */
         #successMessage {
             display: none;
             color: green;
@@ -199,32 +193,38 @@
         });
 
         document.getElementById('phone').addEventListener('input', function () {
-            this.value = this.value.replace(/\D/g, ''); // Allow only numbers
+            this.value = this.value.replace(/\D/g, '');
         });
 
         document.getElementById('customForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent redirection
+            event.preventDefault();
 
             let formData = new FormData(this);
             let jsonData = {};
+
             formData.forEach((value, key) => {
-                jsonData[key] = value;
+                if (key === "food") {
+                    if (!jsonData[key]) {
+                        jsonData[key] = [];
+                    }
+                    jsonData[key].push(value); // Store multiple values in an array
+                } else {
+                    jsonData[key] = value;
+                }
             });
 
             fetch("https://hooks.zapier.com/hooks/catch/10942828/2e9rj9v/", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    mode: "no-cors",
-                    body: JSON.stringify(jsonData)
-                })
-            .then(response => response.json())
-            .then(data => {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                mode: "no-cors",
+                body: JSON.stringify(jsonData)
+            })
+            .then(() => {
                 document.getElementById('successMessage').style.display = "block";
                 document.getElementById('customForm').reset();
             })
             .catch(error => console.error("Error:", error));
         });
-        
     </script>
 
 </body>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Form</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            color: #444;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4facfe;
+            outline: none;
+            box-shadow: 0px 0px 5px rgba(79, 172, 254, 0.5);
+        }
+
+        .food-options {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Consent Checkbox */
+        .consent-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .consent-container input {
+            width: auto;
+            margin: 0;
+        }
+
+        /* Submit Button */
+        button {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00c6ff;
+        }
+
+        /* Error Message */
+        #emailError {
+            text-align: left;
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Success Message */
+        #successMessage {
+            display: none;
+            color: green;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Event Registration</h2>
+
+        <form id="customForm">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter Full Name" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" title="Enter a valid 10-digit phone number" placeholder="Enter Contact Number">
+
+            <label for="company">Company Name:</label>
+            <input type="text" placeholder="Enter Company Name" id="company" name="company" required>
+
+            <label for="workMail">Work Email:</label>
+            <input type="email" id="workMail" name="workMail" placeholder="Enter Work Email" required>
+            <small id="emailError">Please enter a valid work email.</small>
+
+            <label>Do you have any questions?</label>
+            <select id="question" name="question" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <div id="whyQuestion" class="hidden">
+                <label for="why">If Yes, Please Mention Why:</label>
+                <input type="text" id="why" name="why">
+            </div>
+
+            <label>Please select your food preferences (Optional):</label>
+            <div class="food-options">
+                <label><input type="checkbox" name="food" value="Vegetarian"> Vegetarian</label>
+                <label><input type="checkbox" name="food" value="Non-Vegetarian"> Non-Vegetarian</label>
+                <label><input type="checkbox" name="food" value="Vegan"> Vegan</label>
+                <label><input type="checkbox" name="food" value="Gluten-Free"> Gluten-Free</label>
+            </div>
+
+            <div class="consent-container">
+                <input type="checkbox" id="consent" name="consent" required>
+                <label for="consent">I accept and consent to all the above.</label>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <p id="successMessage">Form submitted successfully!</p>
+    </div>
+
+    <script>
+        document.getElementById('question').addEventListener('change', function () {
+            let whyField = document.getElementById('whyQuestion');
+            whyField.style.display = this.value === 'yes' ? 'block' : 'none';
+            document.getElementById('why').required = this.value === 'yes';
+        });
+
+        document.getElementById('workMail').addEventListener('input', function () {
+            let email = this.value.trim();
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            let invalidDomains = ["gmail.com", "yahoo.com", "hotmail.com", "aol.com", "msn.com", "live.com", "outlook.com", "rediffmail.com", "icloud.com", "yandex.com", "mail.com"];
+            let emailDomain = email.substring(email.lastIndexOf("@") + 1);
+            let errorText = document.getElementById('emailError');
+
+            if (!emailPattern.test(email) || invalidDomains.includes(emailDomain.toLowerCase())) {
+                errorText.style.display = "block";
+                this.setCustomValidity("Please enter a valid work email.");
+            } else {
+                errorText.style.display = "none";
+                this.setCustomValidity("");
+            }
+        });
+
+        document.getElementById('phone').addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, ''); // Allow only numbers
+        });
+
+        document.getElementById('customForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent redirection
+
+            let formData = new FormData(this);
+            let jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch( "submit.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('successMessage').style.display = "block";
+                document.getElementById('customForm').reset();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+        
+    </script>
+
+</body>
+</html>

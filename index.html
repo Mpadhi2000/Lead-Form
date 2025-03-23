@@ -211,11 +211,12 @@
                 jsonData[key] = value;
             });
 
-            fetch( "submit.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(jsonData)
-            })
+            fetch("https://hooks.zapier.com/hooks/catch/10942828/2e9rj9v/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    mode: "no-cors",
+                    body: JSON.stringify(jsonData)
+                })
             .then(response => response.json())
             .then(data => {
                 document.getElementById('successMessage').style.display = "block";
